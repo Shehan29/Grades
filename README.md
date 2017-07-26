@@ -1,13 +1,14 @@
-[Grades]
+# Grades
 
-# Installation
+React native application that allows users to track grades and monitor progress in several courses.
 
-- `git clone https://github.com/spencercarli/getting-started-react-navigation.git`
-- `cd FirstLookReactNavigation`
+## Installation
+
+- `git clone https://github.com/Shehan29/Grades.git`
+- `cd Grades`
 - `npm install`
 
-
-# Running
+## Running
 
 - `react-native run-ios`
 - `react-native run-android`
