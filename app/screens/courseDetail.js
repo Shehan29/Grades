@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, AsyncStorage, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, AsyncStorage, StyleSheet, Alert } from 'react-native';
 import { Tile, List, ListItem } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 
@@ -11,18 +11,20 @@ class courseDetail extends Component {
     removeCourse = () => {
       AsyncStorage.getItem('Courses', (err, result) => {
         Courses = JSON.parse(result);
-        for (var i in Courses) {
-          alert(i);
+        index = Courses.findIndex(course => course.name===name);
+        if (index > -1) {
+            Courses.splice(index, 1);
         }
-        //AsyncStorage.setItem('Courses', JSON.stringify(Courses));
-        //this.props.navigation.goBack();
+        AsyncStorage.setItem('Courses', JSON.stringify(Courses));
+        this.props.navigation.goBack();
       });
+      Alert.alert('Deletion', name + ' has been deleted.', [{text: 'OK'}])
     }
 
     return (
       <ScrollView>
         <View style={styles.menu}>
-          <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginRight: 5}} onPress={() => { this.removeCourse() }}><Icon name="add" size={28} color='rgba(0,122,255,0.95)'/><Text style={{color: 'rgba(0,122,255,0.95)', fontSize: 16}}>Remove Course</Text></TouchableOpacity>
+          <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginRight: 5}} onPress={() => { removeCourse() }}><Icon name="add" size={28} color='rgba(0,122,255,0.95)'/><Text style={{color: 'rgba(0,122,255,0.95)', fontSize: 16}}>Remove Course</Text></TouchableOpacity>
         </View>
         <List>
           <ListItem
