@@ -35,35 +35,25 @@ class Feed extends Component {
     this.props.navigation.navigate('Details', { ...course });
   };
 
-  enterCourse = () => {
-    this.setModalVisible(false);
-    AsyncStorage.getItem('Courses', (err, result) => {
-      Courses = result ? JSON.parse(result) : [];
-      courseObject = {
-        "name": this.state.courseName,
-        "colour": this.getColour(),
-        "mark": "---%",
-        "quiz": "---%",
-        "assignments": "---%",
-        "midterm": "---%",
-        "final": "---%",
-
-        "picture": {
-          "thumbnail": "https://cdn2.iconfinder.com/data/icons/circle-icons-1/64/calculator-512.png"
-        },
-      };
-      Courses.push(courseObject);
-      this.setState({courses: Courses});
-      AsyncStorage.setItem('Courses', JSON.stringify(Courses));
-    });
-  }
+    enterCourse = () => {
+        this.setModalVisible(false);
+        AsyncStorage.getItem('Courses', (err, result) => {
+            Courses = result ? JSON.parse(result) : [];
+            courseObject = {
+                "name": this.state.courseName,
+                "colour": this.getColour(),
+                "assessments": [],
+            };
+            Courses.push(courseObject);
+            this.setState({courses: Courses});
+            AsyncStorage.setItem('Courses', JSON.stringify(Courses));
+        });
+    }
 
   setCourseName = (courseName) => {
     this.setState({courseName: courseName});
   }
-  alertName = (courseName) => {
-    alert(JSON.stringify(this.state.courses));
-  }
+
   clear = (courseName) => {
      AsyncStorage.clear();
   }

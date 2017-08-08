@@ -15,18 +15,3 @@ export const me = {
   },
 };
 
-export let coursesData = [
-  {
-    "name": "MATH",
-    "mark": "99%",
-    "quiz": "97%",
-    "assignments": "98%",
-    "midterm": "95%",
-    "final": "94%",
-
-    "picture": {
-      "large": "https://cdn2.iconfinder.com/data/icons/circle-icons-1/64/calculator-512.png",
-      "thumbnail": "https://cdn2.iconfinder.com/data/icons/circle-icons-1/64/calculator-512.png"
-    },
-  },
-];

@@ -20,6 +20,12 @@ export const CourseStack = StackNavigator({
     screen: courseDetail,
     navigationOptions: ({ navigation }) => ({
       title: `${navigation.state.params.name.toUpperCase()}`,
+      headerRight: (
+        <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginRight: 6}}
+        onPress={() => { removeCourse() }}><Icon name="remove-circle" size={20}
+        color='rgba(0,122,255,0.95)'/></TouchableOpacity>
+        //NEED TO CHANGE TO ADD ASSESSMENT
+      ),
     }),
   },
 });
