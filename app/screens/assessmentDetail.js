@@ -78,7 +78,7 @@ class assessmentDetail extends Component {
 					animationType={"slide"}
 					visible={this.state.assessmentModal}>
 					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
-						<View style={{ width: 250, height: 150, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#FFF' }}>
+						<View style={{ width: 250, height: 200, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#FFF' }}>
 							<Text style={{ fontWeight: 'bold', paddingVertical: 20, height: 50 }}>Course Name</Text>
 							<TextInput
 								placeholder='Name'
@@ -98,15 +98,15 @@ class assessmentDetail extends Component {
 								ref='mark'
 								placeholder='Mark'
 								//placeholderTextColor='rgba(255,255,255,0.7)'
+								keyboardType={'numeric'}
 								borderWidth={0.5}
 								borderColor='#d6d7da'
 								textAlign='center'
 								returnKeyType='go'
 								autoCorrect={false}
-								autoFocus={true}
 								blurOnSubmit
 								onChangeText={this.setMark}
-								onSubmitEditing={this.enterCourse}
+								onSubmitEditing={this.addToList}
 								style={styles.input} />
 							<TouchableOpacity style={{paddingTop: 10}} onPress={() => this.addToList()}>
 								<View style={{ flex: 1, flexDirection: 'column', width: 250, height: 50 }}>
@@ -122,7 +122,7 @@ class assessmentDetail extends Component {
 						<ListItem
 							style={styles.listItem}
 							key={assessment.name}
-							leftIcon={{name: 'bubble-chart', color: this.state.colour, size: 50}}
+							leftIcon={{name: 'track-changes', color: this.state.colour, size: 50}}
 							title={`${assessment.name.toUpperCase()}`}
 							subtitle={assessment.mark}
 							onPress={() => this.onLearnMore(assessment)}

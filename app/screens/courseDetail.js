@@ -8,6 +8,7 @@ class courseDetail extends Component {
   state = {
       assessments: this.props.navigation.state.params.assessments,
       assessmentName: '',
+	  value: 0,
       colourModal: false,
       assessmentModal: false,
 	  colour: this.props.navigation.state.params.colour,
@@ -39,6 +40,10 @@ class courseDetail extends Component {
   setAssessmentName = (name) => {
 	this.setState({assessmentName: name});
   }
+	
+	setValue = (value) => {
+		this.setState({value: value});
+	}
 
   getAssessments = async () => {
   	await AsyncStorage.getItem('Courses', (err, result) => {
@@ -62,7 +67,7 @@ class courseDetail extends Component {
                 assessments = courses[index].assessments;
                 const assessmentObject = {
                     "name": this.state.assessmentName,
-                    "value": 0,
+                    "value": this.state.value,
                     "mark": "---%",
 					"assessmentList": [],
                 };
@@ -145,7 +150,7 @@ class courseDetail extends Component {
 			  animationType={"slide"}
 			  visible={this.state.assessmentModal}>
 			  <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
-				  <View style={{ width: 250, height: 150, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#FFF' }}>
+				  <View style={{ width: 250, height: 200, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#FFF' }}>
 					  <Text style={{ fontWeight: 'bold', paddingVertical: 20, height: 50 }}>Course Name</Text>
 					  <TextInput
 						  placeholder='Name'
@@ -159,6 +164,20 @@ class courseDetail extends Component {
 						  autoFocus={true}
 						  blurOnSubmit
 						  onChangeText={this.setAssessmentName}
+						  onSubmitEditing={() => this.refs.value.focus()}
+						  style={styles.input} />
+					  <TextInput
+						  ref='value'
+						  placeholder='Value'
+						  //placeholderTextColor='rgba(255,255,255,0.7)'
+						  borderWidth={0.5}
+						  borderColor='#d6d7da'
+						  textAlign='center'
+						  returnKeyType='go'
+						  autoCapitalize='characters'
+						  autoCorrect={false}
+						  blurOnSubmit
+						  onChangeText={this.setValue}
 						  onSubmitEditing={() => this.addAssessment()}
 						  style={styles.input} />
 					  <TouchableOpacity style={{paddingTop: 10}} onPress={() => this.addAssessment()}>
@@ -177,7 +196,7 @@ class courseDetail extends Component {
 					  key={assessment.name}
 					  leftIcon={{name: 'bubble-chart', color: this.state.colour, size: 50}}
 					  title={`${assessment.name.toUpperCase()}`}
-					  subtitle={assessment.mark}
+					  subtitle={`${assessment.mark} (${assessment.value})`}
 					  onPress={() => this.onLearnMore(assessment)}
 				  />
               ))}
