@@ -1,21 +1,36 @@
 import React, { Component } from 'react';
-import { ScrollView, Modal, View, Text, TextInput, TouchableOpacity, AsyncStorage, StyleSheet, Alert, Picker } from 'react-native';
+import { ScrollView, Modal, View, Text, TextInput, TouchableOpacity, AsyncStorage, StyleSheet, Alert } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 
 
 class courseDetail extends Component {
   state = {
-	assessments: [],
-	assessmentName: '',
-	colourModal: false,
-	assessmentModal: false,
-	colour: 'red',
+      assessments: this.props.navigation.state.params.assessments,
+      assessmentName: '',
+      colourModal: false,
+      assessmentModal: false,
+	  colour: this.props.navigation.state.params.colour,
   }
+
+  name = this.props.navigation.state.params.name;
 
   changeColourModal(visible) {
 	this.setState({colourModal: visible});
   }
+
+    changeColour = (col) => {
+        AsyncStorage.getItem('Courses', (err, result) => {
+            let Courses = JSON.parse(result);
+            const index = Courses.findIndex(course => course.name===this.name);
+            if (index > -1) {
+                Courses[index].colour = col;
+            }
+            AsyncStorage.setItem('Courses', JSON.stringify(Courses));
+            this.changeColourModal(false);
+            this.setState({colour: col});
+        });
+    }
 
   addAssessmentModal(visible) {
 	this.setState({assessmentModal: visible});
@@ -25,26 +40,57 @@ class courseDetail extends Component {
 	this.setState({assessmentName: name});
   }
 
+  getAssessments = async () => {
+  	await AsyncStorage.getItem('Courses', (err, result) => {
+        const courses = result ? JSON.parse(result) : [];
+        const index = courses.findIndex(course => course.name===this.name);
+        let assessments = [];
+        if (courses[index].assessments) {
+            assessments = courses[index].assessments;
+        }
+        this.setState({assessments: assessments});
+    });
+  }
+
+    addAssessment = () => {
+        this.addAssessmentModal(false);
+        AsyncStorage.getItem('Courses', (err, result) => {
+            const courses = result ? JSON.parse(result) : [];
+            const index = courses.findIndex(course => course.name===this.name);
+            let assessments = [];
+            if (index > -1) {
+                assessments = courses[index].assessments;
+                const assessmentObject = {
+                    "name": this.state.assessmentName,
+                    "value": 0,
+                    "mark": "---%",
+					"assessmentList": [],
+                };
+                assessments.push(assessmentObject);
+                this.setState({assessments: assessments});
+                courses[index].assessments = assessments;
+                AsyncStorage.setItem('Courses', JSON.stringify(courses));
+            }
+        });
+    }
+	
+	onLearnMore = async (assessment) => {
+		const assessments = this.state.assessments;
+		const index = assessments.findIndex(object => object.name===assessment.name);
+		let assessmentList = [];
+		if (assessments[index].assessmentList) {
+			assessmentList = assessments[index].assessmentList;
+		}
+		this.props.navigation.navigate('Assessments', { "name": assessment.name, "course": this.name, "colour": this.state.colour, "assessmentList": assessmentList } );
+	};
+
+
 
   render() {
-	const { name, mark, quiz, assignments, midterm, final } = this.props.navigation.state.params;
-	const getAssessments = async () => {
-          await AsyncStorage.getItem('Courses', (err, result) => {
-              const courses = result ? JSON.parse(result) : [];
-              const index = courses.findIndex(course => course.name===name);
-              let assessments = [];
-              if (courses[index].assessments) {
-                  assessments = courses[index].assessments;
-              }
-              this.setState({assessments: assessments});
-          });
-	}
-	() => { getAssessments(); }
-
 	const removeCourse = () => {
 	  AsyncStorage.getItem('Courses', (err, result) => {
 		let Courses = JSON.parse(result);
-		const index = Courses.findIndex(course => course.name===name);
+		const index = Courses.findIndex(course => course.name===this.name);
 		if (index > -1) {
 			Courses.splice(index, 1);
 		}
@@ -53,42 +99,6 @@ class courseDetail extends Component {
 	  });
 	  Alert.alert('Deletion', name + ' has been deleted.', [{text: 'OK'}])
 	}
-
-	const changeColour = (col) => {
-	  AsyncStorage.getItem('Courses', (err, result) => {
-		let Courses = JSON.parse(result);
-		const index = Courses.findIndex(course => course.name===name);
-		if (index > -1) {
-			Courses[index].colour = col;
-		}
-		AsyncStorage.setItem('Courses', JSON.stringify(Courses));
-		this.changeColourModal(false);
-	  });
-	}
-
-	const addAssessment = () => {
-		  this.addAssessmentModal(false);
-		  AsyncStorage.getItem('Courses', (err, result) => {
-			  const courses = result ? JSON.parse(result) : [];
-              const index = courses.findIndex(course => course.name===name);
-			  let assessments = [];
-              if (index > -1) {
-              	  console.log(JSON.stringify(courses[index]));
-                  assessments = courses[index].assessments;
-                  const assessmentObject = {
-                      "name": this.state.assessmentName,
-                      "value": 0,
-                      "mark": "---%",
-                  };
-                  assessments.push(assessmentObject);
-                  this.setState({assessments: assessments});
-                  courses[index].assessments = assessments;
-                  console.log(assessments);
-                  console.log(JSON.stringify(courses[index]));
-                  AsyncStorage.setItem('Courses', JSON.stringify(courses));
-              }
-		  });
-	  }
 
 	return (
 	  <ScrollView>
@@ -105,24 +115,24 @@ class courseDetail extends Component {
 			  <Text style={{ fontWeight: 'bold', paddingVertical: 20 }}>Change Colour</Text>
 			  <View style={{flex: 1, flexDirection: 'row'}}>
 				<TouchableOpacity
-				onPress={() => changeColour('#e74c3c')}
+				onPress={() => this.changeColour('#e74c3c')}
 				style={{backgroundColor: '#e74c3c', height: 40, width: 40, marginHorizontal: 10}}></TouchableOpacity>
 				<TouchableOpacity
-				onPress={() => changeColour('#e67e22')}
+				onPress={() => this.changeColour('#e67e22')}
 				style={{backgroundColor: '#e67e22',height: 40, width: 40, marginHorizontal: 10}}></TouchableOpacity>
 				<TouchableOpacity
-				onPress={() => changeColour('#f1c40f')}
+				onPress={() => this.changeColour('#f1c40f')}
 				style={{backgroundColor: '#f1c40f',height: 40, width: 40, marginHorizontal: 10}}></TouchableOpacity>
 			  </View>
 			  <View style={{flex: 1, flexDirection: 'row'}}>
 				<TouchableOpacity
-				onPress={() => changeColour('#1abc9c')}
+				onPress={() => this.changeColour('#1abc9c')}
 				style={{backgroundColor: '#1abc9c', height: 40, width: 40, marginHorizontal: 10}}></TouchableOpacity>
 				<TouchableOpacity
-				onPress={() => changeColour('#2980b9')}
+				onPress={() => this.changeColour('#2980b9')}
 				style={{backgroundColor: '#2980b9',height: 40, width: 40, marginHorizontal: 10}}></TouchableOpacity>
 				<TouchableOpacity
-				onPress={() => changeColour('#9b59b6')}
+				onPress={() => this.changeColour('#9b59b6')}
 				style={{backgroundColor: '#9b59b6',height: 40, width: 40, marginHorizontal: 10}}></TouchableOpacity>
 			  </View>
 
@@ -149,9 +159,9 @@ class courseDetail extends Component {
 						  autoFocus={true}
 						  blurOnSubmit
 						  onChangeText={this.setAssessmentName}
-						  onSubmitEditing={() => addAssessment()}
+						  onSubmitEditing={() => this.addAssessment()}
 						  style={styles.input} />
-					  <TouchableOpacity style={{paddingTop: 10}} onPress={() => addAssessment()}>
+					  <TouchableOpacity style={{paddingTop: 10}} onPress={() => this.addAssessment()}>
 						  <View style={{ flex: 1, flexDirection: 'column', width: 250, height: 50 }}>
 							  <Text style={{color: '#3498db', textAlign: 'center'}}>OK</Text>
 						  </View>
@@ -161,18 +171,16 @@ class courseDetail extends Component {
 		  </Modal>
 
 		  <List>
-			  {this.state.assessments.map(function(assessment) {
-				return (
+              {this.state.assessments.map((assessment) => (
 				  <ListItem
 					  style={styles.listItem}
 					  key={assessment.name}
-					  leftIcon={{name: 'assessment', color: 'red', size: 50}}
+					  leftIcon={{name: 'bubble-chart', color: this.state.colour, size: 50}}
 					  title={`${assessment.name.toUpperCase()}`}
 					  subtitle={assessment.mark}
 					  onPress={() => this.onLearnMore(assessment)}
 				  />
-				)
-			  })}
+              ))}
 		  </List>
 	  </ScrollView>
 	);
