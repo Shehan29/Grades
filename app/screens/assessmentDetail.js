@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ScrollView, Modal, View, Text, TextInput, TouchableOpacity, AsyncStorage, StyleSheet, Alert } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
+import { computeAssessmentAvg } from '../computation/avgCalculations'
 
 
 class assessmentDetail extends Component {
@@ -30,27 +31,34 @@ class assessmentDetail extends Component {
 	}
 	
 	addToList = () => {
-		this.addToListModal(false);
-		AsyncStorage.getItem('Courses', (err, result) => {
-			const courses = result ? JSON.parse(result) : [];
-			const index = courses.findIndex(course => course.name===this.course);
-			let assessments = [];
-			if (index > -1) {
-				assessments = courses[index].assessments;
-				const index2 = assessments.findIndex(assessment => assessment.name===this.name);
-				if (index2 > -1) {
-					let assessmentList = courses[index].assessments[index2].assessmentList;
-					const assessmentListObject = {
-						"name": this.state.assessmentListName,
-						"mark": this.state.assessmentListMark,
-					};
-					assessmentList.push(assessmentListObject);
-					this.setState({assessmentList: assessmentList});
-					courses[index].assessments[index2].assessmentList = assessmentList;
-					AsyncStorage.setItem('Courses', JSON.stringify(courses));
+		if (new RegExp('^[0-9/]+$').test(this.state.assessmentListMark) && eval(this.state.assessmentListMark)) {
+			this.addToListModal(false);
+			AsyncStorage.getItem('Courses', (err, result) => {
+				const courses = result ? JSON.parse(result) : [];
+				const index = courses.findIndex(course => course.name === this.course);
+				let assessments = [];
+				if (index > -1) {
+					assessments = courses[index].assessments;
+					const index2 = assessments.findIndex(assessment => assessment.name === this.name);
+					if (index2 > -1) {
+						let assessmentList = courses[index].assessments[index2].assessmentList;
+						let mark = this.state.assessmentListMark;
+						if (mark.indexOf('/') > -1) {
+							mark += '*100';
+						}
+						const assessmentListObject = {
+							"name": this.state.assessmentListName,
+							"mark": eval(mark).toString(),
+						};
+						assessmentList.push(assessmentListObject);
+						this.setState({assessmentList: assessmentList});
+						courses[index].assessments[index2].assessmentList = assessmentList;
+						AsyncStorage.setItem('Courses', JSON.stringify(courses));
+						computeAssessmentAvg(this.course, this.name);
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 	
 	onLearnMore = async (assessment) => {
@@ -124,7 +132,7 @@ class assessmentDetail extends Component {
 							key={assessment.name}
 							leftIcon={{name: 'track-changes', color: this.state.colour, size: 50}}
 							title={`${assessment.name.toUpperCase()}`}
-							subtitle={assessment.mark}
+							subtitle={`${parseFloat(assessment.mark).toFixed(1)}%`}
 							onPress={() => this.onLearnMore(assessment)}
 						/>
 					))}

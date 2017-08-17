@@ -3,10 +3,9 @@ import { ScrollView, Modal, View, Text, TextInput, TouchableOpacity, AsyncStorag
 import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 
-
 class courseDetail extends Component {
   state = {
-      assessments: this.props.navigation.state.params.assessments,
+      assessments: [],
       assessmentName: '',
 	  value: 0,
       colourModal: false,
@@ -58,25 +57,27 @@ class courseDetail extends Component {
   }
 
     addAssessment = () => {
-        this.addAssessmentModal(false);
-        AsyncStorage.getItem('Courses', (err, result) => {
-            const courses = result ? JSON.parse(result) : [];
-            const index = courses.findIndex(course => course.name===this.name);
-            let assessments = [];
-            if (index > -1) {
-                assessments = courses[index].assessments;
-                const assessmentObject = {
-                    "name": this.state.assessmentName,
-                    "value": this.state.value,
-                    "mark": "---%",
-					"assessmentList": [],
-                };
-                assessments.push(assessmentObject);
-                this.setState({assessments: assessments});
-                courses[index].assessments = assessments;
-                AsyncStorage.setItem('Courses', JSON.stringify(courses));
-            }
-        });
+  		if (this.state.value > 0 && this.state.value <= 100) {
+			this.addAssessmentModal(false);
+			AsyncStorage.getItem('Courses', (err, result) => {
+				const courses = result ? JSON.parse(result) : [];
+				const index = courses.findIndex(course => course.name === this.name);
+				let assessments = [];
+				if (index > -1) {
+					assessments = courses[index].assessments;
+					const assessmentObject = {
+						"name": this.state.assessmentName,
+						"value": this.state.value,
+						"mark": "---%",
+						"assessmentList": [],
+					};
+					assessments.push(assessmentObject);
+					this.setState({assessments: assessments});
+					courses[index].assessments = assessments;
+					AsyncStorage.setItem('Courses', JSON.stringify(courses));
+				}
+			});
+		}
     }
 	
 	onLearnMore = async (assessment) => {
@@ -88,23 +89,25 @@ class courseDetail extends Component {
 		}
 		this.props.navigation.navigate('Assessments', { "name": assessment.name, "course": this.name, "colour": this.state.colour, "assessmentList": assessmentList } );
 	};
-
-
-
-  render() {
-	const removeCourse = () => {
-	  AsyncStorage.getItem('Courses', (err, result) => {
-		let Courses = JSON.parse(result);
-		const index = Courses.findIndex(course => course.name===this.name);
-		if (index > -1) {
-			Courses.splice(index, 1);
-		}
-		AsyncStorage.setItem('Courses', JSON.stringify(Courses));
-		this.props.navigation.goBack();
-	  });
-	  Alert.alert('Deletion', name + ' has been deleted.', [{text: 'OK'}])
+	
+	getAssessments = async () => {
+		await AsyncStorage.getItem('Courses', (err, result) => {
+			const courses = result ? JSON.parse(result) : [];
+			const index = courses.findIndex(object => object.name===this.name);
+			let assessments = [];
+			if (courses[index].assessments) {
+				assessments = courses[index].assessments;
+			}
+			this.setState({assessments: assessments});
+		});
 	}
-
+	
+	componentDidMount() {
+		this.getAssessments();
+	}
+	
+  render() {
+	this.getAssessments();
 	return (
 	  <ScrollView>
 		<View style={styles.menu}>
@@ -168,7 +171,7 @@ class courseDetail extends Component {
 						  style={styles.input} />
 					  <TextInput
 						  ref='value'
-						  placeholder='Value'
+						  placeholder='Value (%)'
 						  //placeholderTextColor='rgba(255,255,255,0.7)'
 						  borderWidth={0.5}
 						  borderColor='#d6d7da'
@@ -195,8 +198,8 @@ class courseDetail extends Component {
 					  style={styles.listItem}
 					  key={assessment.name}
 					  leftIcon={{name: 'bubble-chart', color: this.state.colour, size: 50}}
-					  title={`${assessment.name.toUpperCase()}`}
-					  subtitle={`${assessment.mark} (${assessment.value})`}
+					  title={`${assessment.name.toUpperCase()} (${assessment.value}%)`}
+					  subtitle={`${isNaN(parseFloat(assessment.mark).toFixed(1)) ? 0 : parseFloat(assessment.mark).toFixed(1)}%`}
 					  onPress={() => this.onLearnMore(assessment)}
 				  />
               ))}

@@ -118,7 +118,7 @@ class Feed extends Component {
 			  key={course.name}
 			  leftIcon={{name: 'assessment', color: course.colour, size: 50}}
 			  title={`${course.name.toUpperCase()}`}
-			  subtitle={course.mark}
+			  subtitle={`${isNaN(parseFloat(course.mark).toFixed(1)) ? 0 : parseFloat(course.mark).toFixed(1)}%`}
 			  onPress={() => this.onLearnMore(course)}
 			/>
 		  ))}
