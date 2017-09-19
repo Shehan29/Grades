@@ -96,6 +96,16 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
     }
+    signingConfigs {
+            release {
+                if (project.hasProperty('GRADES_STORE_FILE')) {
+                    storeFile file(GRADES_STORE_FILE)
+                    storePassword GRADES_STORE_FILE_PASSWORD
+                    keyAlias GRADES_RELEASE_KEY_ALIAS
+                    keyPassword GRADES_RELEASE_KEY_PASSWORD
+                }
+            }
+        }
     splits {
         abi {
             reset()

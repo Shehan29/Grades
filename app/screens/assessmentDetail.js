@@ -3,6 +3,7 @@ import { ScrollView, Modal, View, Text, TextInput, TouchableOpacity, AsyncStorag
 import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import { computeAssessmentAvg } from '../computation/avgCalculations'
+import { refreshData } from '../computation/avgCalculations';
 
 
 class assessmentDetail extends Component {
@@ -32,7 +33,6 @@ class assessmentDetail extends Component {
 	
 	addToList = () => {
 		if (new RegExp('^[0-9/]+$').test(this.state.assessmentListMark) && eval(this.state.assessmentListMark)) {
-			this.addToListModal(false);
 			AsyncStorage.getItem('Courses', (err, result) => {
 				const courses = result ? JSON.parse(result) : [];
 				const index = courses.findIndex(course => course.name === this.course);
@@ -59,26 +59,38 @@ class assessmentDetail extends Component {
 				}
 			});
 		}
+		this.addToListModal(false);
 	}
 	
-	onLearnMore = async (assessment) => {
-		const assessments = this.state.assessments;
-		const index = assessments.findIndex(object => object.name===assessment.name);
-		let assessmentList = [];
-		if (assessments[index].assessmentList) {
-			assessmentList = assessments[index].assessmentList;
-		}
-		this.props.navigation.navigate('Details', { "name": assessment.name, "colour": this.state.colour, "assessmentList": assessmentList } );
+	deleteAssessmentItem = async (name) => {
+		console.log(name);
+		AsyncStorage.getItem('Courses', (err, result) => {
+			const courses = result ? JSON.parse(result) : [];
+			const index = courses.findIndex(course => course.name === this.course);
+			let assessments = [];
+			if (index > -1) {
+				assessments = courses[index].assessments;
+				const index2 = assessments.findIndex(assessment => assessment.name === this.name);
+				if (index2 > -1) {
+					let assessmentList = courses[index].assessments[index2].assessmentList;
+					const index3 = assessmentList.findIndex(assessmentItem => assessmentItem.name===name);
+					if (index3 > -1) {
+						assessmentList.splice(index3, 1);
+						courses[index].assessments[index2].assessmentList = assessmentList;
+						this.setState({assessmentList: assessmentList});
+						AsyncStorage.setItem('Courses', JSON.stringify(courses));
+						refreshData();
+					}
+				}
+			}
+		});
 	};
-	
-	
 	
 	render() {
 		return (
 			<ScrollView>
 				<View style={styles.menu}>
 					<TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginLeft: 5}} onPress={() => { this.addToListModal(true) }}><Icon name="create" size={22} color='rgba(0,122,255,0.95)'/></TouchableOpacity>
-					<TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginRight: 5}} onPress={() => {  }}><Icon name="palette" size={22} color='rgba(0,122,255,0.95)'/></TouchableOpacity>
 				</View>
 				
 				<Modal
@@ -133,7 +145,13 @@ class assessmentDetail extends Component {
 							leftIcon={{name: 'track-changes', color: this.state.colour, size: 50}}
 							title={`${assessment.name.toUpperCase()}`}
 							subtitle={`${parseFloat(assessment.mark).toFixed(1)}%`}
-							onPress={() => this.onLearnMore(assessment)}
+							onPress={() => Alert.alert(
+								`Delete ${assessment.name}`, '',
+								[
+									{text: 'Delete', onPress: () => this.deleteAssessmentItem(assessment.name), style: 'destructive'},
+									{text: 'Cancel', onPress: () => console.log(), style: 'cancel'},
+								],
+							)}
 						/>
 					))}
 				</List>
