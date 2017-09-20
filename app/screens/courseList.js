@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, ScrollView, TouchableOpacity, Modal, StyleSheet, AsyncStorage, Alert, RefreshControl } from 'react-native';
+import { Text, TextInput, View, ScrollView, TouchableOpacity, Modal, StyleSheet, Platform, AsyncStorage, Alert, RefreshControl } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import { refreshData } from '../computation/avgCalculations';
@@ -85,7 +85,7 @@ class Feed extends Component {
 			}>
 				<View style={styles.menu}>
 					<TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginLeft: 5}} onPress={() => { this.setModalVisible(true) }}><Icon name="add" size={28} color='rgba(0,122,255,0.95)'/><Text style={{color: 'rgba(0,122,255,0.95)', fontSize: 16}}>Add Course</Text></TouchableOpacity>
-					<TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginRight: 5}} onPress={() => { Alert.alert('Help', 'Update pag',[{text: 'OK'}]) }}><Text style={{color: 'rgba(0,122,255,0.95)', fontSize: 16}}></Text><Icon name="help-outline" size={28} color='rgba(0,122,255,0.95)'/></TouchableOpacity>
+					<TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginRight: 5}} onPress={() => { Alert.alert('Help', 'Refresh page by swiping down',[{text: 'OK'}]) }}><Text style={{color: 'rgba(0,122,255,0.95)', fontSize: 16}}></Text><Icon name="help-outline" size={28} color='rgba(0,122,255,0.95)'/></TouchableOpacity>
 				</View>
 				<Modal
 					transparent={true}
@@ -93,7 +93,7 @@ class Feed extends Component {
 					visible={this.state.modalVisible}>
 					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
 						<View style={{ width: 250, height: 150, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#FFF' }}>
-							<Text style={{ fontWeight: 'bold', paddingVertical: 20, height: 50 }}>Course Name</Text>
+							<Text style={{ fontWeight: 'bold', paddingVertical: (Platform.OS === 'ios') ? 20 : 30, height: 50 }}>Course Name</Text>
 							<TextInput
 								placeholder='Name'
 								//placeholderTextColor='rgba(255,255,255,0.7)'

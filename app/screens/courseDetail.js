@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Modal, View, Text, TextInput, TouchableOpacity, AsyncStorage, StyleSheet, RefreshControl } from 'react-native';
+import { ScrollView, Modal, View, Text, TextInput, TouchableOpacity, AsyncStorage, StyleSheet, Platform, RefreshControl } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import { refreshData } from '../computation/avgCalculations';
@@ -122,7 +122,7 @@ class courseDetail extends Component {
 					visible={this.state.colourModal}>
 					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
 						<View style={{ width: 250, height: 180, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#FFF' }}>
-							<Text style={{ fontWeight: 'bold', paddingVertical: 20 }}>Change Colour</Text>
+							<Text style={{ fontWeight: 'bold', paddingVertical: (Platform.OS === 'ios') ? 20 : 30 }}>Change Colour</Text>
 							<View style={{flex: 1, flexDirection: 'row'}}>
 								<TouchableOpacity
 									onPress={() => this.changeColour('#e74c3c')}
