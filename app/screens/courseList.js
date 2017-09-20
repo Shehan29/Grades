@@ -93,7 +93,7 @@ class Feed extends Component {
 					visible={this.state.modalVisible}>
 					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
 						<View style={{ width: 250, height: 150, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#FFF' }}>
-							<Text style={{ fontWeight: 'bold', paddingVertical: 20, marginBottom: (Platform.OS === 'ios') ? 0 : 20,  height: 50 }}>Course Name</Text>
+							<Text style={{ fontWeight: 'bold', paddingVertical: 20, height: 55 }}>Course Name</Text>
 							<TextInput
 								placeholder='Name'
 								//placeholderTextColor='rgba(255,255,255,0.7)'
