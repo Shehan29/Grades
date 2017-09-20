@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, ScrollView, TouchableOpacity, Modal, StyleSheet, Platform, AsyncStorage, Alert, RefreshControl } from 'react-native';
+import { Text, TextInput, View, ScrollView, TouchableOpacity, Modal, StyleSheet, AsyncStorage, Alert, RefreshControl } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import { refreshData } from '../computation/avgCalculations';
@@ -93,7 +93,7 @@ class Feed extends Component {
 					visible={this.state.modalVisible}>
 					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
 						<View style={{ width: 250, height: 150, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#FFF' }}>
-							<Text style={{ fontWeight: 'bold', paddingVertical: (Platform.OS === 'ios') ? 20 : 30, height: 50 }}>Course Name</Text>
+							<Text style={{ fontWeight: 'bold', paddingVertical: 20 , height: 50 }}>Course Name</Text>
 							<TextInput
 								placeholder='Name'
 								//placeholderTextColor='rgba(255,255,255,0.7)'
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
 	input: {
 		height: 40,
 		width: 230,
-		backgroundColor: 'rgba(255,255,255,0.2)',
+		backgroundColor: 'transparent',
 		marginBottom: 10,
 		marginHorizontal: 10,
 		paddingVertical: 5

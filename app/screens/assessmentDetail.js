@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Modal, View, Text, TextInput, TouchableOpacity, AsyncStorage, StyleSheet, Platform, Alert } from 'react-native';
+import { ScrollView, Modal, View, Text, TextInput, TouchableOpacity, AsyncStorage, StyleSheet, Alert } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import { computeAssessmentAvg } from '../computation/avgCalculations'
@@ -99,7 +99,7 @@ class assessmentDetail extends Component {
 					visible={this.state.assessmentModal}>
 					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
 						<View style={{ width: 250, height: 200, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#FFF' }}>
-							<Text style={{ fontWeight: 'bold', paddingVertical: (Platform.OS === 'ios') ? 20 : 30, height: 50 }}>Course Name</Text>
+							<Text style={{ fontWeight: 'bold', paddingVertical: 20, height: 50 }}>Course Name</Text>
 							<TextInput
 								placeholder='Name'
 								//placeholderTextColor='rgba(255,255,255,0.7)'
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
 	input: {
 		height: 40,
 		width: 230,
-		backgroundColor: 'rgba(255,255,255,0.2)',
+		backgroundColor: 'transparent',
 		marginBottom: 10,
 		marginHorizontal: 10,
 		paddingVertical: 5
