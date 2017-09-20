@@ -98,7 +98,7 @@ class assessmentDetail extends Component {
 					animationType={"slide"}
 					visible={this.state.assessmentModal}>
 					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
-						<View style={{ width: 250, height: 200, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#FFF' }}>
+						<View style={{ width: 250, height: 200, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#ededed' }}>
 							<Text style={{ fontWeight: 'bold', paddingVertical: 20, height: 55 }}>Course Name</Text>
 							<TextInput
 								placeholder='Name'
