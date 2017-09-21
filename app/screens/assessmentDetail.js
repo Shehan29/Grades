@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, Modal, View, Text, TextInput, TouchableOpacity, AsyncStorage, StyleSheet, Platform, Alert } from 'react-native';
+import { ScrollView, Modal, View, Text, TextInput, TouchableOpacity, AsyncStorage, StyleSheet, Alert } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import { computeAssessmentAvg } from '../computation/avgCalculations'
@@ -90,19 +90,18 @@ class assessmentDetail extends Component {
 		return (
 			<ScrollView>
 				<View style={styles.menu}>
-					<TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginLeft: 5}} onPress={() => { this.addToListModal(true) }}><Icon name="create" size={22} color='rgba(0,122,255,0.95)'/></TouchableOpacity>
+					<TouchableOpacity style={[styles.menuButton, {marginLeft: 5}]} onPress={() => { this.addToListModal(true) }}><Icon name="create" size={22} color='rgba(0,122,255,0.95)'/></TouchableOpacity>
 				</View>
 				
 				<Modal
 					transparent={true}
 					animationType={"slide"}
 					visible={this.state.assessmentModal}>
-					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
-						<View style={{ width: 250, height: 200, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#ededed' }}>
-							<Text style={{ fontWeight: 'bold', paddingVertical: 20, height: 55 }}>Course Name</Text>
+					<View style={styles.modal} >
+						<View style={styles.modalContent}>
+							<Text style={styles.modalTitle}>Course Name</Text>
 							<TextInput
 								placeholder='Name'
-								//placeholderTextColor='rgba(255,255,255,0.7)'
 								borderWidth={0.5}
 								borderColor='#d6d7da'
 								textAlign='center'
@@ -117,7 +116,6 @@ class assessmentDetail extends Component {
 							<TextInput
 								ref='mark'
 								placeholder='Mark'
-								//placeholderTextColor='rgba(255,255,255,0.7)'
 								keyboardType={'numeric'}
 								borderWidth={0.5}
 								borderColor='#d6d7da'
@@ -129,7 +127,7 @@ class assessmentDetail extends Component {
 								onSubmitEditing={this.addToList}
 								style={styles.input} />
 							<TouchableOpacity style={{paddingTop: 10}} onPress={() => this.addToList()}>
-								<View style={{ flex: 1, flexDirection: 'column', width: 250, height: 50 }}>
+								<View style={styles.modalButton}>
 									<Text style={{color: '#3498db', textAlign: 'center'}}>OK</Text>
 								</View>
 							</TouchableOpacity>
@@ -170,6 +168,36 @@ const styles = StyleSheet.create({
 		marginBottom: -15,
 		marginTop: 5,
 	},
+	menuButton: {
+		flexDirection: 'row', alignItems: 'center',
+	},
+	modal: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	modalContent: {
+		width: 250,
+		height: 200,
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		borderWidth: 1,
+		borderRadius: 15,
+		borderColor: '#ededed',
+		backgroundColor: '#FFF',
+	},
+	modalTitle: {
+		fontWeight: 'bold',
+		paddingVertical: 20,
+		height: 55
+	},
+	modalButton: {
+		flex: 1,
+		flexDirection: 'column',
+		width: 230,
+		height: 50
+	},
 	input: {
 		height: 40,
 		width: 230,
@@ -178,5 +206,4 @@ const styles = StyleSheet.create({
 		marginHorizontal: 10,
 		paddingVertical: 5
 	},
-	
 });

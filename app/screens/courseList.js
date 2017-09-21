@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TextInput, View, ScrollView, TouchableOpacity, Modal, StyleSheet, Platform, AsyncStorage, Alert, RefreshControl } from 'react-native';
+import { Text, TextInput, View, ScrollView, TouchableOpacity, Modal, StyleSheet, AsyncStorage, Alert, RefreshControl } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import { refreshData } from '../computation/avgCalculations';
@@ -14,7 +14,7 @@ class Feed extends Component {
 	}
 	
 	getColour() {
-		colours = ['#e74c3c', '#e67e22', '#f1c40f', '#1abc9c', '#2980b9', '#9b59b6'];
+		const colours = ['#e74c3c', '#e67e22', '#f1c40f', '#1abc9c', '#2980b9', '#9b59b6'];
 		return colours[this.state.colour++%6];
 	}
 	
@@ -84,19 +84,24 @@ class Feed extends Component {
 				/>
 			}>
 				<View style={styles.menu}>
-					<TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginLeft: 5}} onPress={() => { this.setModalVisible(true) }}><Icon name="add" size={28} color='rgba(0,122,255,0.95)'/><Text style={{color: 'rgba(0,122,255,0.95)', fontSize: 16}}>Add Course</Text></TouchableOpacity>
-					<TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', marginRight: 5}} onPress={() => { Alert.alert('Help', 'Refresh page by swiping down',[{text: 'OK'}]) }}><Text style={{color: 'rgba(0,122,255,0.95)', fontSize: 16}}></Text><Icon name="help-outline" size={28} color='rgba(0,122,255,0.95)'/></TouchableOpacity>
+					<TouchableOpacity style={[styles.menuButton, {marginLeft: 5}]} onPress={() => { this.setModalVisible(true) }}>
+						<Icon name="add" size={28} color='rgba(0,122,255,0.95)'/>
+						<Text style={{color: 'rgba(0,122,255,0.95)', fontSize: 16}}>Add Course</Text>
+					</TouchableOpacity>
+					<TouchableOpacity style={[styles.menuButton, {marginRight: 5}]} onPress={() => { Alert.alert('Help', 'Refresh page by swiping down',[{text: 'OK'}]) }}>
+						<Text style={{color: 'rgba(0,122,255,0.95)', fontSize: 16}}></Text>
+						<Icon name="help-outline" size={28} color='rgba(0,122,255,0.95)'/>
+					</TouchableOpacity>
 				</View>
 				<Modal
 					transparent={true}
 					animationType={"slide"}
 					visible={this.state.modalVisible}>
-					<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} >
-						<View style={{ width: 250, height: 150, alignItems: 'center', justifyContent: 'space-between', borderRadius: 15, backgroundColor: '#ededed' }}>
-							<Text style={{ fontWeight: 'bold', paddingVertical: 20, height: 55 }}>Course Name</Text>
+					<View style={styles.modal}>
+						<View style={styles.modalContent}>
+							<Text style={styles.modalTitle}>Course Name</Text>
 							<TextInput
 								placeholder='Name'
-								//placeholderTextColor='rgba(255,255,255,0.7)'
 								borderWidth={0.5}
 								borderColor='#d6d7da'
 								textAlign='center'
@@ -109,7 +114,7 @@ class Feed extends Component {
 								onSubmitEditing={this.enterCourse}
 								style={styles.input} />
 							<TouchableOpacity style={{paddingTop: 10}} onPress={this.enterCourse}>
-								<View style={{ flex: 1, flexDirection: 'column', width: 250, height: 50 }}>
+								<View style={styles.modalButton}>
 									<Text style={{color: '#3498db', textAlign: 'center'}}>OK</Text>
 								</View>
 							</TouchableOpacity>
@@ -143,22 +148,39 @@ const styles = StyleSheet.create({
 		marginBottom: -15,
 		marginTop: 5,
 	},
+	menuButton: {
+		flexDirection: 'row', alignItems: 'center',
+	},
 	listItem: {
 		flex: 1,
 		backgroundColor: '#3498db'  //blue
 	},
-	
-	buttonContainer: {
-		backgroundColor: '#2980b9',
-		borderRadius: 10,
-		paddingVertical: 15,
-		marginTop: 15,
-		width: 150,
+	modal: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
-	buttonText: {
-		textAlign: 'center',
-		color: '#FFFFFF',
-		fontWeight: '700',
+	modalContent: {
+		width: 250,
+		height: 150,
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		borderWidth: 1,
+		borderRadius: 15,
+		borderColor: '#ededed',
+		backgroundColor: '#FFF',
+	},
+	modalTitle: {
+		fontWeight: 'bold',
+		paddingVertical: 20,
+		height: 55
+	},
+	modalButton: {
+		flex: 1,
+		flexDirection: 'column',
+		width: 230,
+		height: 50
 	},
 	input: {
 		height: 40,
